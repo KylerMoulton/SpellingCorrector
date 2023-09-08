@@ -1,13 +1,22 @@
 package spell;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Trie implements ITrie{
     private Node root;
+    public Trie(){
+        this.root = new Node();
+    }
     private int wordCount;
     private int nodeCount;
     @Override
     public void add(String word) {
+        //iterate across word and get index
+        // check for existing node at index
+        // if node exists move pointer if not create node
+        //check to see if at the end of word
+        //if at end, increment value of node
         wordCount +=1;
     }
 
@@ -18,12 +27,12 @@ public class Trie implements ITrie{
 
     @Override
     public int getWordCount() {
-        return 0;
+        return wordCount;
     }
 
     @Override
     public int getNodeCount() {
-        return 0;
+        return nodeCount;
     }
 
     @Override
@@ -53,24 +62,30 @@ public class Trie implements ITrie{
 
     @Override
     public boolean equals(Object o) {
-        //is o == null?
+        //is o == null? return false
         if (o == null) return false;
-        //is o == this?
+        //is o == this? return true
         if (o == this) return true;
         //do this and o have the same class?
         if (o.getClass() != this.getClass()) return false;
         Trie d = (Trie)o;
         //do this and d have the same wordCount and nodeCount?
+        if (this.wordCount != d.wordCount) return false;
+        if (this.nodeCount != d.nodeCount) return false;
         return equals_Helper(this.root, d.root);
     }
+    //Helper function looks at specific nodes in the tree
     private boolean equals_Helper(Node n1, Node n2) {
         //Compare n1 and n2 to see if they are the same
             //Do n1 and n2 have the same count?
-            if (n1.getValue() != n2.getValue()) return false;
+        if (n1.getValue() != n2.getValue()) return false;
             //Do n1 and n2 have non-null children in exactly the same indexes
-        //Recurse on tbe children and compare the child subtrees
-            return equals_Helper((Node) n1.getChildren()[0],(Node)n2.getChildren()[0]);
-
+        if (!Arrays.equals(n1.getChildren(), n2.getChildren())) return false;
+        //Recurse on the children and compare the child subtrees
+        for (int i = 0; i < 25;i++) {
+            equals_Helper((Node) n1.getChildren()[i], (Node) n2.getChildren()[i]);
+            }
+        return true;
     }
 
     @Override
