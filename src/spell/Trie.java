@@ -12,12 +12,23 @@ public class Trie implements ITrie{
     private int nodeCount;
     @Override
     public void add(String word) {
-        //iterate across word and get index
-        // check for existing node at index
-        // if node exists move pointer if not create node
-        //check to see if at the end of word
-        //if at end, increment value of node
-        wordCount +=1;
+        StringBuffer remainingChar = new StringBuffer();
+        remainingChar.append(word);
+        add_Helper(root, remainingChar);
+    }
+    private void add_Helper(Node rootNode,StringBuffer remainingChar) {
+        char curChar = remainingChar.charAt(0);
+        if (rootNode.getChildren()[curChar-'a'] == null) {
+            rootNode.getChildren()[curChar-'a'] = new Node();
+            nodeCount+=1;
+        }
+        remainingChar.deleteCharAt(0);
+        if (!remainingChar.isEmpty()) {
+            add_Helper((Node) rootNode.getChildren()[curChar-'a'],remainingChar);
+        }
+        wordCount+=1;
+        rootNode.getChildren()[curChar-'a'].incrementValue();
+
     }
 
     @Override
