@@ -27,18 +27,35 @@ public class SpellCorrector implements ISpellCorrector {
         }
         StringBuilder editWord = new StringBuilder();
         editWord.append(inputWord);
-        Set<String> setOfWords = new HashSet<>();
-        setOfWords.addAll(deletionDistance(editWord));
-        setOfWords.addAll(transpositionDistance(editWord));
-        setOfWords.addAll(alterationDistance(editWord));
-        setOfWords.addAll(insertionDistance(editWord));
-        List<Node> foundWords = new ArrayList<>();
-        for (String word : setOfWords){
+        Set<String> editDistance1 = new HashSet<>();
+        editDistance1.addAll(deletionDistance(editWord));
+        editDistance1.addAll(transpositionDistance(editWord));
+        editDistance1.addAll(alterationDistance(editWord));
+        editDistance1.addAll(insertionDistance(editWord));
+        List<String> foundWords = new ArrayList<>();
+        for (String word : editDistance1){
             if (trie.find(word)!=null) {
-                foundWords.add((Node)trie.find(word));
+                return word;
+                //foundWords.add(trie.find(word).toString());
             }
         }
-        if (foundWords.isEmpty())
+        Set<String> editDistance2 = new HashSet<>();
+        for (String word : editDistance1) {
+
+
+            editDistance2.addAll(deletionDistance(new StringBuilder(word)));
+            editDistance2.addAll(alterationDistance(new StringBuilder(word)));
+            editDistance2.addAll(transpositionDistance(new StringBuilder(word)));
+            editDistance2.addAll(insertionDistance(new StringBuilder(word)));
+        }
+        for (String word2 : editDistance2) {
+            if (trie.find(word2) != null) {
+                return word2;
+                //foundWords.add(trie.find(word).toString());
+            }
+        }
+
+
         return null;
     }
     public Set<String> deletionDistance(StringBuilder inputString) {
