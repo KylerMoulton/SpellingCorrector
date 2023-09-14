@@ -1,9 +1,6 @@
 package spell;
-
-import java.util.Arrays;
-
 public class Trie implements ITrie {
-    private Node root;
+    private final Node root;
 
     public Trie() {
         this.root = new Node();
@@ -15,8 +12,9 @@ public class Trie implements ITrie {
 
     @Override
     public void add(String word) {
+        String lowerWord = word.toLowerCase();
         StringBuffer remainingChar = new StringBuffer();
-        remainingChar.append(word);
+        remainingChar.append(lowerWord);
         add_Helper(root, remainingChar);
     }
 
@@ -39,8 +37,10 @@ public class Trie implements ITrie {
 
     @Override
     public INode find(String word) {
+        String newWord = word.toLowerCase();
+        if (newWord.isEmpty())return null;
         StringBuffer remainingChar = new StringBuffer();
-        remainingChar.append(word);
+        remainingChar.append(newWord);
         return find_Helper(root, remainingChar);
     }
 

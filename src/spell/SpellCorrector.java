@@ -23,7 +23,8 @@ public class SpellCorrector implements ISpellCorrector {
     @Override
     public String suggestSimilarWord(String inputWord) {
         if (trie.find(inputWord) != null) {
-            return trie.find(inputWord).toString();
+            return inputWord.toLowerCase();
+            //return trie.find(inputWord).toString();
         }
         StringBuilder editWord = new StringBuilder();
         editWord.append(inputWord);
@@ -32,31 +33,65 @@ public class SpellCorrector implements ISpellCorrector {
         editDistance1.addAll(transpositionDistance(editWord));
         editDistance1.addAll(alterationDistance(editWord));
         editDistance1.addAll(insertionDistance(editWord));
-        List<String> foundWords = new ArrayList<>();
+        if (editDistance1.isEmpty()){
+            return null;
+        }
+        List <String> foundWords1 = new ArrayList<>();
         for (String word : editDistance1){
             if (trie.find(word)!=null) {
-                return word;
+                foundWords1.add(word);
                 //foundWords.add(trie.find(word).toString());
             }
         }
+        if (foundWords1.size()==1){
+            return foundWords1.get(0);
+        }
+        if (foundWords1.size()>1){
+            return tieBreaker(foundWords1);
+        }
+
         Set<String> editDistance2 = new HashSet<>();
         for (String word : editDistance1) {
-
-
             editDistance2.addAll(deletionDistance(new StringBuilder(word)));
             editDistance2.addAll(alterationDistance(new StringBuilder(word)));
             editDistance2.addAll(transpositionDistance(new StringBuilder(word)));
             editDistance2.addAll(insertionDistance(new StringBuilder(word)));
         }
+        List <String> foundWords2 = new ArrayList<>();
         for (String word2 : editDistance2) {
             if (trie.find(word2) != null) {
-                return word2;
+                foundWords2.add(word2);
                 //foundWords.add(trie.find(word).toString());
             }
         }
-
-
+        if (foundWords2.size()==1){
+            return foundWords2.get(0);
+        }
+        if (foundWords2.size()>1){
+            return tieBreaker(foundWords2);
+        }
         return null;
+    }
+    public String tieBreaker(List<String> possibleWords) {
+        String curWord = possibleWords.get(0);
+        List <String> sameCountWords = new ArrayList<>();
+        for (int i = 0; i < possibleWords.size() - 1; i++) {
+            if (trie.find(curWord).getValue() < trie.find(possibleWords.get(i)).getValue()){
+                curWord = possibleWords.get(i);
+            }
+//            else if (trie.find(curWord).getValue() > trie.find(possibleWords.get(i)).getValue()){
+//                possibleWords.remove(i);
+//            }
+            else if (trie.find(curWord).getValue() == trie.find(possibleWords.get(i)).getValue()){
+                sameCountWords.add(curWord);
+                sameCountWords.add(possibleWords.get(i));
+            }
+        }
+        if (!sameCountWords.isEmpty()) {
+            return curWord;
+        }
+        return sameCountWords.get(0);
+
     }
     public Set<String> deletionDistance(StringBuilder inputString) {
         Set<String> deletionSet = new HashSet<>();

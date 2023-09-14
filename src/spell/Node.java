@@ -2,7 +2,7 @@ package spell;
 
 public class Node implements INode{
     private int count;
-    private Node[] children;
+    private final Node[] children;
     public Node() {
         this.count = 0;
         this.children = new Node[26];
