@@ -38,6 +38,7 @@ public class Trie implements ITrie {
     @Override
     public INode find(String word) {
         String newWord = word.toLowerCase();
+        if (newWord.isEmpty())return null;
         StringBuffer remainingChar = new StringBuffer();
         remainingChar.append(newWord);
         return find_Helper(root, remainingChar);
